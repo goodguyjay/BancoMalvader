@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class DatabaseConnection {
+public final class DatabaseConnection {
   private static final Logger logger = Logger.getLogger(DatabaseConnection.class.getName());
   private static final String URL = "jdbc:mysql://localhost:3306/banco_malvader";
   private static final String USER = "root";
