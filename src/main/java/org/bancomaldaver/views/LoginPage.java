@@ -97,7 +97,7 @@ public class LoginPage extends QWidget {
     centerLayout.addWidget(forgotPasswordButton);
 
     loginButton.clicked.connect(() -> onLoginClicked(usernameField.text(), passwordField.text()));
-    backButton.clicked.connect(() -> mainWindow.setCentralWidget(new MainMenu()));
+    backButton.clicked.connect(() -> mainWindow.setCentralWidget(new MainMenuPage()));
 
     mainLayout.addLayout(topLayout);
     mainLayout.addLayout(centerLayout);

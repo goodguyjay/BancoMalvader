@@ -1,17 +1,13 @@
 package org.bancomaldaver.models;
 
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@RequiredArgsConstructor
-public class Reports {
-    @NonNull
-    private String type;
-    private LocalDateTime generationDate;
-    private List<String> data;
+public final class Reports {
+  private String type;
+  private LocalDateTime generationDate;
+  private List<String> data;
 }

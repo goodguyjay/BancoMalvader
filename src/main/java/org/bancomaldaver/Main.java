@@ -2,31 +2,34 @@ package org.bancomaldaver;
 
 import io.qt.core.Qt;
 import io.qt.widgets.QApplication;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bancomaldaver.utils.DatabaseConnection;
-import org.bancomaldaver.views.MainMenu;
+import org.bancomaldaver.views.MainMenuPage;
 
 public class Main {
   private static final Logger logger = Logger.getLogger(Main.class.getName());
 
   public static void main(String[] args) {
-    logger.info("starting application...");
-    QApplication.initialize(args);
+    var consoleHandler = new ConsoleHandler();
+    consoleHandler.setLevel(Level.ALL);
+    logger.addHandler(consoleHandler);
+    logger.setLevel(Level.ALL);
+
     try {
-      if (DatabaseConnection.getConnection() != null) {
-        logger.info("connected to the database");
-      } else {
-        logger.warning("could not connect to the database");
-      }
-    } catch (Exception exception) {
-      logger.severe(exception.getMessage());
+      logger.info("Iniciando a aplicação...");
+
+      QApplication.initialize(args);
+
+      QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseDesktopOpenGL);
+
+      var mainMenu = new MainMenuPage();
+      mainMenu.show();
+
+      QApplication.exec();
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Erro ao iniciar a aplicação: " + e.getMessage());
+      e.printStackTrace();
     }
-
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseDesktopOpenGL);
-
-    var mainMenu = new MainMenu();
-    mainMenu.show();
-
-    QApplication.exec();
   }
 }
