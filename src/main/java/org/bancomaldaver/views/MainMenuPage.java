@@ -157,6 +157,11 @@ public class MainMenuPage extends QMainWindow {
     buttonSavingsAccount.setStyleSheet(buttonCheckingAccount.styleSheet());
     dialogLayout.addWidget(buttonSavingsAccount);
 
+    var buttonEmployeeAccount = new QPushButton("Conta Funcionário");
+    buttonEmployeeAccount.setFont(FontHelper.getBaseFont(16));
+    buttonEmployeeAccount.setStyleSheet(buttonCheckingAccount.styleSheet());
+    dialogLayout.addWidget(buttonEmployeeAccount);
+
     buttonSavingsAccount.clicked.connect(
         () -> {
           dialog.accept();
@@ -169,6 +174,13 @@ public class MainMenuPage extends QMainWindow {
           dialog.accept();
           var registerCheckingAccountPage = new CreateCheckingAccountPage(this);
           setCentralWidget(registerCheckingAccountPage);
+        });
+
+    buttonEmployeeAccount.clicked.connect(
+        () -> {
+          dialog.accept();
+          var registerEmployeePage = new CreateEmployeePage(this);
+          setCentralWidget(registerEmployeePage);
         });
 
     dialog.setLayout(dialogLayout);

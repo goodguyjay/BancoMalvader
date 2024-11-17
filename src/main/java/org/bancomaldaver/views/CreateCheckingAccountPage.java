@@ -61,20 +61,17 @@ public class CreateCheckingAccountPage extends QWidget {
     agencyDropdown.setFont(FontHelper.getBaseFont(16));
     formLayout.addRow("Agência:", agencyDropdown);
 
-    // Full Name
     usernameField = new QLineEdit();
     usernameField.setFont(FontHelper.getBaseFont(16));
     usernameField.setPlaceholderText("Digite seu nome completo");
     formLayout.addRow("Nome Completo:", usernameField);
 
-    // CPF with Mask
     cpfField = new QLineEdit();
     cpfField.setFont(FontHelper.getBaseFont(16));
     cpfField.setPlaceholderText("Digite seu CPF");
     cpfField.setInputMask("000.000.000-00;_");
     formLayout.addRow("CPF:", cpfField);
 
-    // Birth Date
     birthDateField = new QDateEdit();
     birthDateField.setFont(FontHelper.getBaseFont(16));
     birthDateField.setCalendarPopup(true);
@@ -85,14 +82,12 @@ public class CreateCheckingAccountPage extends QWidget {
     phoneField.setPlaceholderText("Digite seu telefone");
     formLayout.addRow("Telefone:", phoneField);
 
-    // CEP with Mask
     cepField = new QLineEdit();
     cepField.setFont(FontHelper.getBaseFont(16));
     cepField.setPlaceholderText("xxxxx-xxx");
     cepField.setInputMask("00000-000;_");
     formLayout.addRow("CEP:", cepField);
 
-    // Street with Character Limit Note
     streetField = new QLineEdit();
     streetField.setFont(FontHelper.getBaseFont(16));
     streetField.setPlaceholderText("Logradouro (máximo 50 caracteres)");

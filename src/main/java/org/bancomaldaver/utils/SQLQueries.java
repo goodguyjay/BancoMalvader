@@ -11,6 +11,7 @@ public final class SQLQueries {
       "INSERT INTO user (name, cpf, birth_date, phone, password, user_type) VALUES (?, ?, ?, ?, ?, ?)";
   public static final String SELECT_USER_BY_CPF = "SELECT * FROM user WHERE cpf = ?";
   public static final String SELECT_USER_BY_ID = "SELECT * FROM user WHERE id_user = ?";
+  public static final String CHECK_CPF_EXISTS = "SELECT COUNT(*) FROM user WHERE cpf = ?";
 
   // Employee Queries
   public static final String INSERT_EMPLOYEE =

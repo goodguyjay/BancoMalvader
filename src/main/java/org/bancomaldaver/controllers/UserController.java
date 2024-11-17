@@ -13,6 +13,10 @@ public final class UserController {
   private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
   public void createSavingsAccount(Customer customer, SavingsAccount account) throws Exception {
+    if (doesCpfExist(customer.getCpf())) {
+      throw new IllegalArgumentException("CPF já cadastrado.");
+    }
+
     validateSavingsAccount(customer, account);
 
     var userId = insertUser(customer);
@@ -25,6 +29,9 @@ public final class UserController {
   }
 
   public void createCheckingAccount(Customer customer, CheckingAccount account) throws Exception {
+    if (doesCpfExist(customer.getCpf())) {
+      throw new IllegalArgumentException("CPF já cadastrado.");
+    }
     validateCheckingAccount(customer, account);
 
     var userId = insertUser(customer);
@@ -154,5 +161,10 @@ public final class UserController {
     var maxAccountNumber = DatabaseWrapper.executeQueryForSingleInt(query);
 
     return (maxAccountNumber == 0) ? 10000 : maxAccountNumber + 1;
+  }
+
+  private boolean doesCpfExist(String cpf) throws Exception {
+    var count = DatabaseWrapper.executeQueryForSingleInt(SQLQueries.CHECK_CPF_EXISTS, cpf);
+    return count > 0;
   }
 }
