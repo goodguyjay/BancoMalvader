@@ -108,7 +108,7 @@ public class MainMenuPage extends QMainWindow {
     userLoginButton.clicked.connect(
         () -> {
           dialog.accept();
-          var loginPage = new UserLoginPage(this);
+          var loginPage = new CustomerLoginPage(this);
           setCentralWidget(loginPage);
         });
 

@@ -36,6 +36,17 @@ public final class UserController {
     insertCheckingAccount(customerId, account);
   }
 
+  public boolean validateCustomerLogin(String cpf, String password, String branch)
+      throws Exception {
+    final String query =
+        "SELECT COUNT(*) FROM user u "
+            + "INNER JOIN account a ON u.id_user = a.id_customer "
+            + "WHERE u.cpf = ? AND u.password = ? AND a.branch = ?";
+    int count = DatabaseWrapper.executeQueryForSingleInt(query, cpf, password, branch);
+
+    return count > 0;
+  }
+
   private void validateSavingsAccount(Customer customer, SavingsAccount account) {
     if (customer.getName() == null || customer.getCpf() == null || customer.getPassword() == null) {
       throw new IllegalArgumentException("As informações do cliente estão incompletas.");
