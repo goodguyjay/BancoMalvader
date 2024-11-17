@@ -167,7 +167,8 @@ public class MainMenuPage extends QMainWindow {
     buttonCheckingAccount.clicked.connect(
         () -> {
           dialog.accept();
-          QMessageBox.information(this, "Em breve", "Cadastro de conta corrente em breve!");
+          var registerCheckingAccountPage = new CreateCheckingAccountPage(this);
+          setCentralWidget(registerCheckingAccountPage);
         });
 
     dialog.setLayout(dialogLayout);

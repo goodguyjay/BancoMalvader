@@ -1,9 +1,9 @@
 package org.bancomaldaver.controllers;
 
-import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bancomaldaver.models.Address;
+import org.bancomaldaver.models.CheckingAccount;
 import org.bancomaldaver.models.Customer;
 import org.bancomaldaver.models.SavingsAccount;
 import org.bancomaldaver.utils.DatabaseWrapper;
@@ -13,7 +13,7 @@ public final class UserController {
   private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
   public void createSavingsAccount(Customer customer, SavingsAccount account) throws Exception {
-    validateAccount(customer, account);
+    validateSavingsAccount(customer, account);
 
     var userId = insertUser(customer);
 
@@ -24,7 +24,19 @@ public final class UserController {
     insertSavingsAccount(customerId, account);
   }
 
-  public void validateAccount(Customer customer, SavingsAccount account) {
+  public void createCheckingAccount(Customer customer, CheckingAccount account) throws Exception {
+    validateCheckingAccount(customer, account);
+
+    var userId = insertUser(customer);
+
+    insertAddress(userId, customer.getAddress());
+
+    var customerId = insertCustomer(userId);
+
+    insertCheckingAccount(customerId, account);
+  }
+
+  private void validateSavingsAccount(Customer customer, SavingsAccount account) {
     if (customer.getName() == null || customer.getCpf() == null || customer.getPassword() == null) {
       throw new IllegalArgumentException("As informações do cliente estão incompletas.");
     }
@@ -36,6 +48,21 @@ public final class UserController {
 
     if (account.getBranch() == null || account.getInterestRate() <= 0) {
       throw new IllegalArgumentException("As informações da conta poupança estão incompletas.");
+    }
+  }
+
+  private void validateCheckingAccount(Customer customer, CheckingAccount account) {
+    if (customer.getName() == null || customer.getCpf() == null || customer.getPassword() == null) {
+      throw new IllegalArgumentException("As informações do cliente estão incompletas.");
+    }
+
+    Address address = customer.getAddress();
+    if (address == null || address.getZipCode() == null || address.getCity() == null) {
+      throw new IllegalArgumentException("As informações do endereço estão incompletas.");
+    }
+
+    if (account.getBranch() == null || account.getLimit() <= 0 || account.getDueDate() == null) {
+      throw new IllegalArgumentException("As informações da conta corrente estão incompletas.");
     }
   }
 
@@ -89,6 +116,25 @@ public final class UserController {
 
     DatabaseWrapper.executeUpdate(
         SQLQueries.INSERT_SAVINGS_ACCOUNT, accountId, account.getInterestRate());
+  }
+
+  private void insertCheckingAccount(int customerId, CheckingAccount account) throws Exception {
+    var accountNumber = generateAccountNumber();
+
+    var accountId =
+        DatabaseWrapper.executeUpdate(
+            SQLQueries.INSERT_ACCOUNT,
+            customerId,
+            account.getBranch(),
+            "CHECKING",
+            0.0,
+            accountNumber);
+
+    DatabaseWrapper.executeUpdate(
+        SQLQueries.INSERT_CHECKING_ACCOUNT,
+        accountId,
+        account.getLimit(),
+        account.getDueDate().toString());
   }
 
   private int generateAccountNumber() throws Exception {
