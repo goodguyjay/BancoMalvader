@@ -5,6 +5,7 @@ import io.qt.gui.QIntValidator;
 import io.qt.widgets.*;
 import io.qt.widgets.QMainWindow;
 import java.time.LocalDate;
+import org.bancomaldaver.controllers.AccountController;
 import org.bancomaldaver.controllers.UserController;
 import org.bancomaldaver.models.*;
 import org.bancomaldaver.utils.FontHelper;
@@ -31,7 +32,6 @@ public class CreateCheckingAccountPage extends QWidget {
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back button
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -49,10 +49,8 @@ public class CreateCheckingAccountPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
-    // Form layout
     var formLayout = new QFormLayout();
 
-    // Agency Dropdown
     agencyDropdown = new QComboBox();
     agencyDropdown.addItem("1 - Agência DF", "DF");
     agencyDropdown.addItem("2 - Agência GO", "GO");
@@ -93,26 +91,22 @@ public class CreateCheckingAccountPage extends QWidget {
     streetField.setPlaceholderText("Logradouro (máximo 50 caracteres)");
     formLayout.addRow("Logradouro:", streetField);
 
-    // House Number
     houseNumberField = new QLineEdit();
     houseNumberField.setFont(FontHelper.getBaseFont(16));
     houseNumberField.setPlaceholderText("Digite o número");
-    houseNumberField.setValidator(new QIntValidator(0, 99999)); // Only accept numbers
+    houseNumberField.setValidator(new QIntValidator(0, 99999));
     formLayout.addRow("Número:", houseNumberField);
 
-    // Neighborhood
     neighborhoodField = new QLineEdit();
     neighborhoodField.setFont(FontHelper.getBaseFont(16));
     neighborhoodField.setPlaceholderText("Digite o bairro");
     formLayout.addRow("Bairro:", neighborhoodField);
 
-    // City
     cityField = new QLineEdit();
     cityField.setFont(FontHelper.getBaseFont(16));
     cityField.setPlaceholderText("Digite a cidade");
     formLayout.addRow("Cidade:", cityField);
 
-    // State
     stateDropdown = new QComboBox();
     for (BrazilianStates state : BrazilianStates.values()) {
       stateDropdown.addItem(
@@ -121,14 +115,12 @@ public class CreateCheckingAccountPage extends QWidget {
     stateDropdown.setFont(FontHelper.getBaseFont(16));
     formLayout.addRow("Estado:", stateDropdown);
 
-    // Password
     passwordField = new QLineEdit();
     passwordField.setFont(FontHelper.getBaseFont(16));
     passwordField.setPlaceholderText("Digite sua senha");
     passwordField.setEchoMode(QLineEdit.EchoMode.Password);
     formLayout.addRow("Senha:", passwordField);
 
-    // Credit Limit
     limitField = new QLineEdit();
     limitField.setFont(FontHelper.getBaseFont(16));
     limitField.setPlaceholderText("Digite o limite da conta");
@@ -136,13 +128,11 @@ public class CreateCheckingAccountPage extends QWidget {
         new QDoubleValidator(0, 1000000, 2)); // Accept numeric values with decimals
     formLayout.addRow("Limite da Conta:", limitField);
 
-    // Due Date
     dueDateField = new QDateEdit();
     dueDateField.setFont(FontHelper.getBaseFont(16));
     dueDateField.setCalendarPopup(true);
     formLayout.addRow("Data de Vencimento:", dueDateField);
 
-    // Register Button
     var registerButton = new QPushButton("Cadastrar");
     registerButton.setFont(FontHelper.getBaseFont(16));
     registerButton.setStyleSheet(
@@ -162,7 +152,6 @@ public class CreateCheckingAccountPage extends QWidget {
     registerButton.clicked.connect(this::onRegisterClicked);
     formLayout.addRow(registerButton);
 
-    // Assemble layouts
     mainLayout.addLayout(formLayout);
     centralWidget.setLayout(mainLayout);
     setLayout(mainLayout);
@@ -170,7 +159,6 @@ public class CreateCheckingAccountPage extends QWidget {
 
   private void onRegisterClicked() {
     try {
-      // Collect customer data
       var customer = new Customer();
       customer.setName(usernameField.text());
       customer.setCpf(cpfField.text().replaceAll("\\D", ""));
@@ -189,15 +177,16 @@ public class CreateCheckingAccountPage extends QWidget {
       address.setState(selectedState);
       customer.setAddress(address);
 
-      // Collect account data
       var checkingAccount = new CheckingAccount();
       checkingAccount.setBranch(agencyDropdown.currentData().toString());
       checkingAccount.setLimit(Double.parseDouble(limitField.text()));
       checkingAccount.setDueDate(LocalDate.parse(dueDateField.date().toString("yyyy-MM-dd")));
 
-      // Call controller
-      var controller = new UserController();
-      controller.createCheckingAccount(customer, checkingAccount);
+      var userController = new UserController();
+      var userId = userController.createUserWithAddress(customer);
+
+      var accountController = new AccountController();
+      accountController.createCheckingAccount(userId, checkingAccount);
 
       QMessageBox.information(this, "Sucesso", "Conta corrente criada com sucesso!");
     } catch (Exception e) {

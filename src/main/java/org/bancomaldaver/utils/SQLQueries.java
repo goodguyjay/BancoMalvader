@@ -12,17 +12,24 @@ public final class SQLQueries {
   public static final String SELECT_USER_BY_CPF = "SELECT * FROM user WHERE cpf = ?";
   public static final String SELECT_USER_BY_ID = "SELECT * FROM user WHERE id_user = ?";
   public static final String CHECK_CPF_EXISTS = "SELECT COUNT(*) FROM user WHERE cpf = ?";
+  public static final String SELECT_USER_ID_BY_CPF = "SELECT id_user FROM user WHERE cpf = ?";
+  public static final String SELECT_ID_USER_BY_ID_CUSTOMER =
+      "SELECT id_user from customer where id_customer = ?";
 
   // Employee Queries
   public static final String INSERT_EMPLOYEE =
       "INSERT INTO employee (employee_code, role, id_user) VALUES (?, ?, ?)";
   public static final String SELECT_EMPLOYEE_BY_CODE =
       "SELECT * FROM employee WHERE employee_code = ?";
+  public static final String GET_EMPLOYEE_NAME_BY_CODE =
+      "SELECT name FROM user u INNER JOIN employee e ON u.id_user = e.id_user WHERE e.employee_code = ?";
+  public static final String VALIDATE_EMPLOYEE_LOGIN =
+      "SELECT COUNT(*) FROM user u INNER JOIN employee e ON u.id_user = e.id_user WHERE e.employee_code = ? AND u.password = ?";
 
   // Customer Queries
   public static final String INSERT_CUSTOMER = "INSERT INTO customer (id_user) VALUES (?)";
   public static final String SELECT_CUSTOMER_BY_USER_ID =
-      "SELECT * FROM customer WHERE id_user = ?";
+      "SELECT id_customer FROM customer WHERE id_user = ?";
 
   // Address Queries
   public static final String INSERT_ADDRESS =

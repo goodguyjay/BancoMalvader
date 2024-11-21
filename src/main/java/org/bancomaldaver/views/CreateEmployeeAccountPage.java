@@ -8,7 +8,7 @@ import org.bancomaldaver.models.Address;
 import org.bancomaldaver.models.Employee;
 import org.bancomaldaver.utils.FontHelper;
 
-public class CreateEmployeePage extends QWidget {
+public class CreateEmployeeAccountPage extends QWidget {
   private final QLineEdit nameField;
   private final QLineEdit cpfField;
   private final QDateEdit birthDateField;
@@ -23,7 +23,7 @@ public class CreateEmployeePage extends QWidget {
   private final QLineEdit roleField;
   private final QLineEdit passwordField;
 
-  public CreateEmployeePage(QMainWindow mainWindow) {
+  public CreateEmployeeAccountPage(QMainWindow mainWindow) {
     setWindowTitle("Banco Malvader - Criar Funcionário");
 
     var centralWidget = new QWidget();

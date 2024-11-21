@@ -3,6 +3,7 @@ package org.bancomaldaver.views;
 import io.qt.gui.QIntValidator;
 import io.qt.widgets.*;
 import java.time.LocalDate;
+import org.bancomaldaver.controllers.AccountController;
 import org.bancomaldaver.controllers.UserController;
 import org.bancomaldaver.models.Address;
 import org.bancomaldaver.models.BrazilianStates;
@@ -185,8 +186,11 @@ public class CreateSavingsAccountPage extends QWidget {
       savingsAccount.setInterestRate(0.5); // Default interest rate
 
       // Call controller
-      var controller = new UserController();
-      controller.createSavingsAccount(customer, savingsAccount);
+      var userController = new UserController();
+      var userId = userController.createUserWithAddress(customer);
+
+      var accountController = new AccountController();
+      accountController.createSavingsAccount(userId, savingsAccount);
 
       QMessageBox.information(this, "Sucesso", "Conta poupança criada com sucesso!");
     } catch (Exception e) {

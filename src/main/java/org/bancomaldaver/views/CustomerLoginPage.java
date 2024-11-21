@@ -4,6 +4,7 @@ import io.qt.core.Qt;
 import io.qt.widgets.*;
 import org.bancomaldaver.controllers.UserController;
 import org.bancomaldaver.utils.FontHelper;
+import org.bancomaldaver.utils.NavigationManager;
 
 public class CustomerLoginPage extends QWidget {
   private final QLineEdit cpfField;
@@ -15,8 +16,8 @@ public class CustomerLoginPage extends QWidget {
 
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
-
     var topLayout = new QHBoxLayout();
+    var centerLayout = new QVBoxLayout();
     topLayout.setAlignment(Qt.AlignmentFlag.AlignLeft);
 
     var backButton = new QPushButton("Voltar");
@@ -31,54 +32,38 @@ public class CustomerLoginPage extends QWidget {
             + "QPushButton:hover {"
             + "background-color: #b3b3b3;"
             + "}");
-    backButton.clicked.connect(() -> mainWindow.setCentralWidget(new MainMenuPage()));
-    topLayout.addWidget(backButton);
-
-    var centerLayout = new QVBoxLayout();
 
     var titleLabel = new QLabel("Login Cliente");
     titleLabel.setFont(FontHelper.getBaseFont(28));
     titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter);
     titleLabel.setStyleSheet(
         "color: #4CAF50;" + "font-weight: bold;" + "text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);");
-    centerLayout.addWidget(titleLabel);
 
-    // CPF Field
     cpfField = new QLineEdit();
-    cpfField.setPlaceholderText("Digite seu CPF");
-    cpfField.setInputMask("000.000.000-00;_"); // CPF mask
+    cpfField.setInputMask("000.000.000-00;_");
     cpfField.setFont(FontHelper.getBaseFont(16));
     cpfField.setStyleSheet(
         "padding: 8px;"
             + "border: 1px solid #ccc;"
             + "border-radius: 5px;"
-            + "background-color: #ffffff;"
-            + "color: #333;"
-            + "font-size: 16px;"
-            + "placeholder-text-color: #999;");
-    centerLayout.addWidget(cpfField);
+            + "placeholder-text-color: #ffffff;");
 
-    // Branch Dropdown
     branchDropdown = new QComboBox();
     branchDropdown.addItem("1 - Agência DF", "DF");
     branchDropdown.addItem("2 - Agência GO", "GO");
     branchDropdown.addItem("3 - Agência SP", "SP");
     branchDropdown.addItem("4 - Agência RN", "RN");
     branchDropdown.setFont(FontHelper.getBaseFont(16));
-    centerLayout.addWidget(branchDropdown);
 
-    // Password Field
     passwordField = new QLineEdit();
     passwordField.setPlaceholderText("Senha");
     passwordField.setFont(FontHelper.getBaseFont(16));
     passwordField.setEchoMode(QLineEdit.EchoMode.Password);
     passwordField.setStyleSheet(
         "padding: 8px;"
-            + "placeholder-text-color: #999;"
+            + "placeholder-text-color: #ffffff;"
             + "border: 1px solid #ccc;"
-            + "border-radius: 5px;"
-            + "background-color: #ffffff;");
-    centerLayout.addWidget(passwordField);
+            + "border-radius: 5px;");
 
     var loginButton = new QPushButton("Entrar");
     loginButton.setFont(FontHelper.getBaseFont(16));
@@ -86,7 +71,6 @@ public class CustomerLoginPage extends QWidget {
         "QPushButton {"
             + "background-color: #4CAF50;"
             + "placeholder-text-color: #999;"
-            + "color: white;"
             + "border-radius: 8px;"
             + "padding: 10px;"
             + "font-weight: bold;"
@@ -97,23 +81,17 @@ public class CustomerLoginPage extends QWidget {
             + "QPushButton:pressed {"
             + "background-color: #388E3C;"
             + "}");
+
+    loginButton.clicked.connect(() -> onLoginClicked(mainWindow));
+    backButton.clicked.connect(() -> mainWindow.setCentralWidget(new MainMenuPage()));
+
+    topLayout.addWidget(backButton);
+
+    centerLayout.addWidget(titleLabel);
+    centerLayout.addWidget(branchDropdown);
+    centerLayout.addWidget(cpfField);
+    centerLayout.addWidget(passwordField);
     centerLayout.addWidget(loginButton);
-
-    var forgotPasswordButton = new QPushButton("Esqueci minha senha");
-    forgotPasswordButton.setFont(FontHelper.getBaseFont(16));
-    forgotPasswordButton.setStyleSheet(
-        "QPushButton {"
-            + "color: #4CAF50;"
-            + "background: none;"
-            + "border: none;"
-            + "text-decoration: underline;"
-            + "}"
-            + "QPushButton:hover {"
-            + "color: #388E3C;"
-            + "}");
-    centerLayout.addWidget(forgotPasswordButton);
-
-    loginButton.clicked.connect(this::onLoginClicked);
 
     mainLayout.addLayout(topLayout);
     mainLayout.addLayout(centerLayout);
@@ -123,17 +101,18 @@ public class CustomerLoginPage extends QWidget {
     setLayout(mainLayout);
   }
 
-  private void onLoginClicked() {
+  private void onLoginClicked(QMainWindow mainWindow) {
     try {
-      var cpf = cpfField.text().replaceAll("\\D", ""); // Remove mask characters
+      var cpf = cpfField.text().replaceAll("\\D", "");
       var password = passwordField.text();
       var branch = branchDropdown.currentData().toString();
 
-      UserController controller = new UserController();
-      boolean isValid = controller.validateCustomerLogin(cpf, password, branch);
+      var controller = new UserController();
+      var accountId = controller.validateCustomerLogin(cpf, password, branch);
 
-      if (isValid) {
+      if (accountId > 0) {
         QMessageBox.information(this, "Sucesso", "Login efetuado com sucesso!");
+        NavigationManager.getInstance().navigateTo(new CustomerMainPage(mainWindow, accountId));
       } else {
         QMessageBox.warning(this, "Erro", "CPF, senha ou agência incorretos.");
       }

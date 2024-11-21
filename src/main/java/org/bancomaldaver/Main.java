@@ -2,9 +2,11 @@ package org.bancomaldaver;
 
 import io.qt.core.Qt;
 import io.qt.widgets.QApplication;
+import io.qt.widgets.QMainWindow;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bancomaldaver.utils.NavigationManager;
 import org.bancomaldaver.views.MainMenuPage;
 
 public class Main {
@@ -23,8 +25,18 @@ public class Main {
 
       QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseDesktopOpenGL);
 
-      var mainMenu = new MainMenuPage();
-      mainMenu.show();
+      //      var mainMenu = new MainMenuPage();
+      //      mainMenu.show();
+
+      var mainWindow = new QMainWindow();
+      mainWindow.setWindowTitle("Banco Malvader");
+
+      NavigationManager.getInstance().initialize(mainWindow);
+      NavigationManager.getInstance().navigateTo(new MainMenuPage());
+
+      mainWindow.show();
+
+      mainWindow.resize(1366, 768);
 
       QApplication.exec();
     } catch (Exception e) {
