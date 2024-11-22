@@ -8,18 +8,30 @@ import org.bancomaldaver.controllers.CustomerController;
 import org.bancomaldaver.utils.ButtonUtils;
 import org.bancomaldaver.utils.FontHelper;
 
+/**
+ * página principal para clientes. permite acesso a funcionalidades como consultar saldo, realizar
+ * depósitos, saques, visualizar extrato e consultar limite de crédito.
+ */
 public final class CustomerMainPage extends QWidget {
 
+  /**
+   * construtor da página principal do cliente.
+   *
+   * @param mainWindow a janela principal da aplicação.
+   * @param accountId o identificador da conta do cliente.
+   */
   public CustomerMainPage(QMainWindow mainWindow, int accountId) {
     setWindowTitle("Banco Malvader - Cliente");
 
     var mainLayout = new QVBoxLayout();
 
+    // Cabeçalho com boas-vindas
     var headerLabel = new QLabel("Bem-vindo, Cliente!");
     headerLabel.setFont(FontHelper.getBaseFont(24));
     headerLabel.setAlignment(Qt.AlignmentFlag.AlignCenter);
     mainLayout.addWidget(headerLabel);
 
+    // Botões para funcionalidades principais
     var balanceButton =
         ButtonUtils.createButton("Consultar Saldo", () -> showBalanceDialog(accountId), this);
     var depositButton =
@@ -35,6 +47,7 @@ public final class CustomerMainPage extends QWidget {
     mainLayout.addWidget(statementButton);
 
     try {
+      // Verifica o tipo de conta e adiciona botão para limite se for conta corrente
       var controller = new CustomerController();
       var accountType = controller.getAccountType(accountId);
 
@@ -48,12 +61,18 @@ public final class CustomerMainPage extends QWidget {
       QMessageBox.critical(this, "Erro", "Erro ao carregar tipo de conta: " + e.getMessage());
     }
 
+    // Botão para voltar ao menu principal
     var backButton = ButtonUtils.createButton("Voltar ao Menu Principal", mainWindow::close, this);
     mainLayout.addWidget(backButton);
 
     setLayout(mainLayout);
   }
 
+  /**
+   * exibe um diálogo para consultar o saldo da conta.
+   *
+   * @param accountId o identificador da conta do cliente.
+   */
   private void showBalanceDialog(int accountId) {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Consultar Saldo");
@@ -83,6 +102,11 @@ public final class CustomerMainPage extends QWidget {
     dialog.exec();
   }
 
+  /**
+   * exibe um diálogo para realizar depósito.
+   *
+   * @param accountId o identificador da conta do cliente.
+   */
   private void showDepositDialog(int accountId) {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Depósito");
@@ -111,6 +135,11 @@ public final class CustomerMainPage extends QWidget {
     dialog.exec();
   }
 
+  /**
+   * exibe um diálogo para realizar saque.
+   *
+   * @param accountId o identificador da conta do cliente.
+   */
   private void showWithdrawalDialog(int accountId) {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Saque");
@@ -144,6 +173,11 @@ public final class CustomerMainPage extends QWidget {
     dialog.exec();
   }
 
+  /**
+   * exibe um diálogo para visualizar o extrato da conta.
+   *
+   * @param accountId o identificador da conta do cliente.
+   */
   private void showStatementDialog(int accountId) {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Extrato");
@@ -186,6 +220,11 @@ public final class CustomerMainPage extends QWidget {
     dialog.exec();
   }
 
+  /**
+   * exibe um diálogo para consultar o limite de crédito.
+   *
+   * @param accountId o identificador da conta do cliente.
+   */
   private void showCreditLimitDialog(int accountId) {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Consultar Limite");

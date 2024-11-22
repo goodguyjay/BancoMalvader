@@ -6,9 +6,14 @@ import java.util.logging.Logger;
 import org.bancomaldaver.utils.FontHelper;
 import org.bancomaldaver.utils.NavigationManager;
 
+/**
+ * classe que representa a página principal do menu do Banco Malvader. contém opções para Login de
+ * Usuário, Login de Funcionário e Sair.
+ */
 public final class MainMenuPage extends QMainWindow {
   private static final Logger logger = Logger.getLogger(MainMenuPage.class.getName());
 
+  /** construtor da classe MainMenuPage. configura a interface principal do menu. */
   public MainMenuPage() {
     setWindowTitle("Banco Malvader - Menu Principal");
 
@@ -73,6 +78,7 @@ public final class MainMenuPage extends QMainWindow {
     setCentralWidget(centralWidget);
   }
 
+  /** termina a aplicação. */
   private void terminate() {
     logger.info("fechando aplicação...");
     QApplication.quit();

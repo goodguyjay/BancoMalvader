@@ -4,13 +4,26 @@ import io.qt.core.Qt;
 import io.qt.widgets.*;
 import org.bancomaldaver.utils.FontHelper;
 
+/**
+ * página de interface do usuário para alterar os dados de clientes. permite ao funcionário
+ * modificar o telefone e o endereço de um cliente.
+ */
 public final class AlterCustomerDataPage extends QWidget {
+
+  /**
+   * construtor da página de alteração de dados do cliente.
+   *
+   * @param mainWindow a janela principal da aplicação para navegação entre páginas.
+   */
   public AlterCustomerDataPage(QMainWindow mainWindow) {
+    // define o título da janela
     setWindowTitle("Alterar Dados do Cliente");
 
+    // cria o widget central e o layout principal
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
+    // cria o layout superior com o botão "Voltar"
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -24,16 +37,20 @@ public final class AlterCustomerDataPage extends QWidget {
             + "QPushButton:hover {"
             + "background-color: #b3b3b3;"
             + "}");
+
+    // ação do botão "Voltar" para navegar de volta para a página principal do funcionário
     backButton.clicked.connect(() -> mainWindow.setCentralWidget(new EmployeeMainPage(mainWindow)));
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
+    // cria um rótulo para exibir a mensagem de placeholder
     var placeholderLabel =
         new QLabel("Funcionalidade para alterar telefone e endereço de clientes.");
     placeholderLabel.setFont(FontHelper.getBaseFont(18));
-    placeholderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter);
+    placeholderLabel.setAlignment(Qt.AlignmentFlag.AlignCenter); // centraliza o texto no rótulo
     mainLayout.addWidget(placeholderLabel);
 
+    // define o layout principal para a página
     setLayout(mainLayout);
   }
 }

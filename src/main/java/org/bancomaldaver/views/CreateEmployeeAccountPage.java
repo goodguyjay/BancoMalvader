@@ -8,7 +8,13 @@ import org.bancomaldaver.models.Address;
 import org.bancomaldaver.models.Employee;
 import org.bancomaldaver.utils.FontHelper;
 
+/**
+ * página de interface do usuário para criar contas de funcionários. permite inserir dados pessoais,
+ * endereço e cargo do funcionário para registro no sistema.
+ */
 public final class CreateEmployeeAccountPage extends QWidget {
+
+  // Campos de entrada para os dados do funcionário
   private final QLineEdit nameField;
   private final QLineEdit cpfField;
   private final QDateEdit birthDateField;
@@ -23,12 +29,19 @@ public final class CreateEmployeeAccountPage extends QWidget {
   private final QLineEdit roleField;
   private final QLineEdit passwordField;
 
+  /**
+   * construtor da página para criar uma nova conta de funcionário.
+   *
+   * @param mainWindow a janela principal da aplicação para navegação entre páginas.
+   */
   public CreateEmployeeAccountPage(QMainWindow mainWindow) {
     setWindowTitle("Banco Malvader - Criar Funcionário");
 
+    // Configuração do layout principal
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
+    // Botão "Voltar" no topo
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -46,8 +59,10 @@ public final class CreateEmployeeAccountPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
+    // Formulário de entrada de dados
     var formLayout = new QFormLayout();
 
+    // Configuração dos campos do formulário
     nameField = new QLineEdit();
     nameField.setFont(FontHelper.getBaseFont(16));
     nameField.setPlaceholderText("Digite o nome completo");
@@ -117,6 +132,7 @@ public final class CreateEmployeeAccountPage extends QWidget {
     passwordField.setEchoMode(QLineEdit.EchoMode.Password);
     formLayout.addRow("Senha:", passwordField);
 
+    // Botão "Cadastrar"
     var registerButton = new QPushButton("Cadastrar");
     registerButton.setFont(FontHelper.getBaseFont(16));
     registerButton.setStyleSheet(
@@ -141,6 +157,10 @@ public final class CreateEmployeeAccountPage extends QWidget {
     setLayout(mainLayout);
   }
 
+  /**
+   * ação executada ao clicar no botão "Cadastrar". coleta os dados do formulário, cria os objetos
+   * necessários e realiza o registro no sistema.
+   */
   private void onRegisterClicked() {
     try {
       var employee = new Employee();

@@ -13,8 +13,18 @@ import org.bancomaldaver.models.AccountClosureData;
 import org.bancomaldaver.utils.ButtonUtils;
 import org.bancomaldaver.utils.NavigationManager;
 
+/**
+ * página principal do funcionário. Esta classe representa a interface de entrada principal para
+ * funcionários do sistema. Inclui funcionalidades como consultar dados, criar contas, alterar
+ * dados, encerrar contas e gerar relatórios financeiros.
+ */
 public final class EmployeeMainPage extends QWidget {
 
+  /**
+   * construtor da classe EmployeeMainPage.
+   *
+   * @param mainWindow janela principal onde esta página será exibida.
+   */
   public EmployeeMainPage(QMainWindow mainWindow) {
     setWindowTitle("Banco Malvader - Página Principal do Funcionário");
 
@@ -61,6 +71,10 @@ public final class EmployeeMainPage extends QWidget {
     setLayout(mainLayout);
   }
 
+  /**
+   * gera um relatório financeiro no formato CSV. Pede autenticação do funcionário antes de gerar o
+   * relatório.
+   */
   private void generateFinancialReportDialog() {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Autenticação do Funcionário");
@@ -99,6 +113,12 @@ public final class EmployeeMainPage extends QWidget {
     dialog.exec();
   }
 
+  /**
+   * autentica o funcionário com base na senha.
+   *
+   * @param password senha do funcionário.
+   * @return true se a autenticação for bem-sucedida, caso contrário, false.
+   */
   private boolean authenticateEmployee(String password) {
     try {
       var employeeController = new EmployeeController();
@@ -109,6 +129,10 @@ public final class EmployeeMainPage extends QWidget {
     }
   }
 
+  /**
+   * método para gerar o relatório financeiro no formato CSV. Salva o relatório na pasta Downloads
+   * do usuário.
+   */
   private void generateFinancialReport() {
     try {
       var employeeController = new EmployeeController();
@@ -160,6 +184,11 @@ public final class EmployeeMainPage extends QWidget {
     }
   }
 
+  /**
+   * abre um diálogo para consultar dados de contas, funcionários e clientes.
+   *
+   * @param mainWindow janela principal da aplicação.
+   */
   private void openDataConsultationDialog(QMainWindow mainWindow) {
     var dialog = new QDialog(this);
     dialog.setWindowTitle("Consulta de Dados");

@@ -10,7 +10,13 @@ import org.bancomaldaver.controllers.UserController;
 import org.bancomaldaver.models.*;
 import org.bancomaldaver.utils.FontHelper;
 
+/**
+ * página de interface do usuário para criar contas correntes. permite inserir dados pessoais,
+ * endereço e configurações da conta corrente para registro no sistema.
+ */
 public final class CreateCheckingAccountPage extends QWidget {
+
+  // Campos para entrada de dados do usuário
   private final QLineEdit usernameField;
   private final QLineEdit cpfField;
   private final QDateEdit birthDateField;
@@ -26,12 +32,19 @@ public final class CreateCheckingAccountPage extends QWidget {
   private final QDateEdit dueDateField;
   private final QComboBox agencyDropdown;
 
+  /**
+   * construtor da página para criar uma nova conta corrente.
+   *
+   * @param mainWindow a janela principal da aplicação para navegação entre páginas.
+   */
   public CreateCheckingAccountPage(QMainWindow mainWindow) {
     setWindowTitle("Banco Malvader - Criar Conta Corrente");
 
+    // Configuração do layout principal
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
+    // Botão "Voltar" no topo
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -49,8 +62,10 @@ public final class CreateCheckingAccountPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
+    // Formulário de entrada de dados
     var formLayout = new QFormLayout();
 
+    // Configuração dos campos do formulário
     agencyDropdown = new QComboBox();
     agencyDropdown.addItem("1 - Agência DF", "DF");
     agencyDropdown.addItem("2 - Agência GO", "GO");
@@ -132,6 +147,7 @@ public final class CreateCheckingAccountPage extends QWidget {
     dueDateField.setCalendarPopup(true);
     formLayout.addRow("Data de Vencimento:", dueDateField);
 
+    // Botão "Cadastrar"
     var registerButton = new QPushButton("Cadastrar");
     registerButton.setFont(FontHelper.getBaseFont(16));
     registerButton.setStyleSheet(
@@ -156,6 +172,10 @@ public final class CreateCheckingAccountPage extends QWidget {
     setLayout(mainLayout);
   }
 
+  /**
+   * ação executada ao clicar no botão "Cadastrar". coleta os dados do formulário, cria os objetos
+   * necessários e realiza o registro.
+   */
   private void onRegisterClicked() {
     try {
       var customer = new Customer();

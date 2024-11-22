@@ -8,13 +8,29 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * classe utilitária para operações com o banco de dados. oferece métodos para executar queries e
+ * updates com validações de segurança contra injeção sql.
+ */
 public final class DatabaseWrapper {
   private static final Logger logger = Logger.getLogger(DatabaseWrapper.class.getName());
 
+  /**
+   * construtor privado para evitar instanciação da classe.
+   *
+   * @throws UnsupportedOperationException sempre que for chamado.
+   */
   private DatabaseWrapper() {
     throw new UnsupportedOperationException("Essa classe não pode ser instanciada diretamente.");
   }
 
+  /**
+   * executa uma query de inserção ou atualização no banco de dados e retorna a chave gerada.
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return a chave primária gerada pela operação.
+   */
   public static int executeQuery(String query, Object... parameters) {
     if (!isQuerySafe(query)) {
       throw new IllegalArgumentException("Tentativa de Injeção SQL detectada.");
@@ -44,6 +60,17 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * executa uma atualização no banco de dados com uma correção temporária (não há solução mais
+   * permanente que uma solução temporária...).
+   *
+   * <p>se Deus existe, me perdoe.
+   *
+   * @param query query sql a ser executada.
+   * @param accountId id da conta que será retornado.
+   * @param parameters parâmetros para a query.
+   * @return o id da conta.
+   */
   public static int executeUpdateTerribleFix(String query, int accountId, Object... parameters) {
     if (!isQuerySafe(query)) {
       throw new IllegalArgumentException("Tentativa de Injeção SQL detectada.");
@@ -66,6 +93,13 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * executa uma consulta e retorna múltiplos resultados como uma lista de maps.
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return lista de resultados onde cada mapa representa uma linha da consulta.
+   */
   public static List<Map<String, String>> executeQueryForMultipleResults(
       String query, Object... parameters) {
     if (!isQuerySafe(query)) {
@@ -101,6 +135,15 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * executa uma consulta para exclusão e retorna o número de linhas afetadas.
+   *
+   * <p>só eu e Deus sabíamos o pq eu fiz esse método. agora é só Deus.
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return número de linhas deletadas.
+   */
   public static int executeDelete(String query, Object... parameters) {
     if (!isQuerySafe(query)) {
       throw new IllegalArgumentException("Tentativa de Injeção SQL detectada.");
@@ -125,6 +168,16 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * executa uma consulta para exclusão e retorna o número de linhas afetadas.
+   *
+   * <p>java foi maldito comigo nessa. overload apenas de tipo de retorno deveria ser permitido. se
+   * for... bem, código legado instantaneo :)
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return número de linhas deletadas.
+   */
   public static double executeQueryForSingleDouble(String query, Object... parameters)
       throws Exception {
     if (!isQuerySafe(query)) {
@@ -149,6 +202,15 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * executa uma consulta para exclusão e retorna o número de linhas afetadas.
+   *
+   * <p>mesma coisa do anterior... fazer o que né.
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return número de linhas deletadas.
+   */
   public static int executeQueryForSingleInt(String query, Object... parameters) throws Exception {
     try (Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(query)) {
@@ -167,6 +229,15 @@ public final class DatabaseWrapper {
     return 0;
   }
 
+  /**
+   * executa uma consulta para exclusão e retorna o número de linhas afetadas.
+   *
+   * <p>mesma coisa do anterior... mas retona uma string :)
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return número de linhas deletadas.
+   */
   public static String executeQueryForSingleString(String query, Object... parameters)
       throws Exception {
     try (Connection connection = DatabaseConnection.getConnection();
@@ -186,6 +257,15 @@ public final class DatabaseWrapper {
     return null;
   }
 
+  /**
+   * executa uma consulta para exclusão e retorna o número de linhas afetadas.
+   *
+   * <p>mesma coisa do anterior... mas retorna um map :)
+   *
+   * @param query query sql a ser executada.
+   * @param parameters parâmetros para a query.
+   * @return número de linhas deletadas.
+   */
   public static Map<String, Object> executeQueryForSingleResult(
       String query, Object... parameters) {
     if (!isQuerySafe(query)) {
@@ -221,6 +301,13 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * define os parâmetros para o prepared statement.
+   *
+   * @param statement o prepared statement a ser configurado.
+   * @param parameters os valores dos parâmetros a serem definidos.
+   * @throws SQLException se ocorrer um erro ao definir os parâmetros.
+   */
   private static void setParameters(PreparedStatement statement, Object... parameters)
       throws SQLException {
     for (var i = 0; i < parameters.length; i++) {
@@ -228,6 +315,12 @@ public final class DatabaseWrapper {
     }
   }
 
+  /**
+   * verifica se a query é segura contra injeção sql.
+   *
+   * @param query a query sql a ser analisada.
+   * @return true se a query for considerada segura; false caso contrário.
+   */
   private static boolean isQuerySafe(String query) {
     String[] disallowed = {
       ";",
