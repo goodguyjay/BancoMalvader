@@ -10,7 +10,7 @@ import org.bancomaldaver.controllers.UserController;
 import org.bancomaldaver.models.*;
 import org.bancomaldaver.utils.FontHelper;
 
-public class CreateCheckingAccountPage extends QWidget {
+public final class CreateCheckingAccountPage extends QWidget {
   private final QLineEdit usernameField;
   private final QLineEdit cpfField;
   private final QDateEdit birthDateField;
@@ -108,7 +108,7 @@ public class CreateCheckingAccountPage extends QWidget {
     formLayout.addRow("Cidade:", cityField);
 
     stateDropdown = new QComboBox();
-    for (BrazilianStates state : BrazilianStates.values()) {
+    for (var state : BrazilianStates.values()) {
       stateDropdown.addItem(
           state.getAbbreviation() + " - " + state.getFullName(), state.getAbbreviation());
     }
@@ -124,8 +124,7 @@ public class CreateCheckingAccountPage extends QWidget {
     limitField = new QLineEdit();
     limitField.setFont(FontHelper.getBaseFont(16));
     limitField.setPlaceholderText("Digite o limite da conta");
-    limitField.setValidator(
-        new QDoubleValidator(0, 1000000, 2)); // Accept numeric values with decimals
+    limitField.setValidator(new QDoubleValidator(0, 1000000, 2));
     formLayout.addRow("Limite da Conta:", limitField);
 
     dueDateField = new QDateEdit();

@@ -1,7 +1,5 @@
 package org.bancomaldaver.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +22,13 @@ public final class EmployeeDAO {
       throw new Exception("Funcionário não encontrado.");
     }
 
-    // Convert Map<String, Object> to Map<String, String>
     Map<String, String> formattedData = new HashMap<>();
     for (Map.Entry<String, Object> entry : rawData.entrySet()) {
       formattedData.put(
           entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : "");
     }
 
-    // Format the address
-    String address =
+    var address =
         String.format(
             "%s, %s, %s, %s, %s, %s",
             rawData.get("street"),
@@ -57,16 +53,5 @@ public final class EmployeeDAO {
             + "ORDER BY t.transaction_date ASC";
 
     return DatabaseWrapper.executeQueryForMultipleResults(query);
-  }
-
-  private static String formatAddress(ResultSet resultSet) throws SQLException {
-    return String.format(
-        "%s, %s, %s, %s, %s, %s",
-        resultSet.getString("street"),
-        resultSet.getString("house_number"),
-        resultSet.getString("neighborhood"),
-        resultSet.getString("city"),
-        resultSet.getString("state"),
-        resultSet.getString("zip_code"));
   }
 }

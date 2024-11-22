@@ -8,7 +8,7 @@ import org.bancomaldaver.models.Address;
 import org.bancomaldaver.models.Employee;
 import org.bancomaldaver.utils.FontHelper;
 
-public class CreateEmployeeAccountPage extends QWidget {
+public final class CreateEmployeeAccountPage extends QWidget {
   private final QLineEdit nameField;
   private final QLineEdit cpfField;
   private final QDateEdit birthDateField;
@@ -29,7 +29,6 @@ public class CreateEmployeeAccountPage extends QWidget {
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back button
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -47,35 +46,29 @@ public class CreateEmployeeAccountPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
-    // Form layout
     var formLayout = new QFormLayout();
 
-    // Name Field
     nameField = new QLineEdit();
     nameField.setFont(FontHelper.getBaseFont(16));
     nameField.setPlaceholderText("Digite o nome completo");
     formLayout.addRow("Nome Completo:", nameField);
 
-    // CPF Field
     cpfField = new QLineEdit();
     cpfField.setFont(FontHelper.getBaseFont(16));
     cpfField.setPlaceholderText("Digite o CPF");
     cpfField.setInputMask("000.000.000-00;_");
     formLayout.addRow("CPF:", cpfField);
 
-    // Birth Date
     birthDateField = new QDateEdit();
     birthDateField.setFont(FontHelper.getBaseFont(16));
     birthDateField.setCalendarPopup(true);
     formLayout.addRow("Data de Nascimento:", birthDateField);
 
-    // Phone Field
     phoneField = new QLineEdit();
     phoneField.setFont(FontHelper.getBaseFont(16));
     phoneField.setPlaceholderText("Digite o telefone");
     formLayout.addRow("Telefone:", phoneField);
 
-    // Address Fields
     zipCodeField = new QLineEdit();
     zipCodeField.setFont(FontHelper.getBaseFont(16));
     zipCodeField.setPlaceholderText("xxxxx-xxx");
@@ -90,7 +83,7 @@ public class CreateEmployeeAccountPage extends QWidget {
     houseNumberField = new QLineEdit();
     houseNumberField.setFont(FontHelper.getBaseFont(16));
     houseNumberField.setPlaceholderText("Digite o número da casa");
-    houseNumberField.setValidator(new QIntValidator(1, 99999)); // Numeric input only
+    houseNumberField.setValidator(new QIntValidator(1, 99999));
     formLayout.addRow("Número:", houseNumberField);
 
     neighborhoodField = new QLineEdit();
@@ -108,26 +101,22 @@ public class CreateEmployeeAccountPage extends QWidget {
     stateField.setPlaceholderText("Digite o estado");
     formLayout.addRow("Estado:", stateField);
 
-    // Employee Code Field
     employeeCodeField = new QLineEdit();
     employeeCodeField.setFont(FontHelper.getBaseFont(16));
     employeeCodeField.setPlaceholderText("Digite o código do funcionário");
     formLayout.addRow("Código do Funcionário:", employeeCodeField);
 
-    // Role Field
     roleField = new QLineEdit();
     roleField.setFont(FontHelper.getBaseFont(16));
     roleField.setPlaceholderText("Digite o cargo do funcionário");
     formLayout.addRow("Cargo:", roleField);
 
-    // Password Field
     passwordField = new QLineEdit();
     passwordField.setFont(FontHelper.getBaseFont(16));
     passwordField.setPlaceholderText("Digite a senha");
     passwordField.setEchoMode(QLineEdit.EchoMode.Password);
     formLayout.addRow("Senha:", passwordField);
 
-    // Register Button
     var registerButton = new QPushButton("Cadastrar");
     registerButton.setFont(FontHelper.getBaseFont(16));
     registerButton.setStyleSheet(
@@ -147,7 +136,6 @@ public class CreateEmployeeAccountPage extends QWidget {
     registerButton.clicked.connect(this::onRegisterClicked);
     formLayout.addRow(registerButton);
 
-    // Assemble layouts
     mainLayout.addLayout(formLayout);
     centralWidget.setLayout(mainLayout);
     setLayout(mainLayout);
@@ -155,10 +143,9 @@ public class CreateEmployeeAccountPage extends QWidget {
 
   private void onRegisterClicked() {
     try {
-      // Collect Employee Data
       var employee = new Employee();
       employee.setName(nameField.text());
-      employee.setCpf(cpfField.text().replaceAll("\\D", "")); // Remove mask
+      employee.setCpf(cpfField.text().replaceAll("\\D", ""));
       employee.setBirthDate(LocalDate.parse(birthDateField.date().toString("yyyy-MM-dd")));
       employee.setPhone(phoneField.text());
       employee.setPassword(passwordField.text());
@@ -174,7 +161,6 @@ public class CreateEmployeeAccountPage extends QWidget {
       address.setState(stateField.text());
       employee.setAddress(address);
 
-      // Call Controller
       var controller = new EmployeeController();
       controller.createEmployee(employee);
 

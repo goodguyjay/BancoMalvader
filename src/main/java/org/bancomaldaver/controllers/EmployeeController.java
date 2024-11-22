@@ -27,6 +27,43 @@ public class EmployeeController {
     insertEmployee(userId, employee);
   }
 
+  public String getEmployeeNameByCode(String code) throws Exception {
+    // Não era pra ter uma query aqui... mas por questões de tempo, não tenho tempo de refatorar e
+    // testar
+    final String query =
+        "SELECT name FROM user u "
+            + "INNER JOIN employee e ON u.id_user = e.id_user "
+            + "WHERE e.employee_code = ?";
+    return DatabaseWrapper.executeQueryForSingleString(query, code);
+  }
+
+  public boolean validateEmployeeLogin(String code, String password) throws Exception {
+    // Não era pra ter uma query aqui... mas por questões de tempo, não tenho tempo de refatorar e
+    // testar
+    final String query =
+        "SELECT COUNT(*) FROM user u "
+            + "INNER JOIN employee e ON u.id_user = e.id_user "
+            + "WHERE e.employee_code = ? AND u.password = ?";
+    var count = DatabaseWrapper.executeQueryForSingleInt(query, code, password);
+    return count > 0;
+  }
+
+  public boolean authenticate(String password) throws Exception {
+    // Não era pra ter uma query aqui... mas por questões de tempo, não tenho tempo de refatorar e
+    // testar
+    final String query = "SELECT COUNT(*) FROM user WHERE password = ? AND user_type = 'EMPLOYEE'";
+    int count = DatabaseWrapper.executeQueryForSingleInt(query, password);
+    return count > 0;
+  }
+
+  public Map<String, String> getEmployeeDetails(String employeeCode) throws Exception {
+    return EmployeeDAO.getEmployeeDetailsByCode(employeeCode);
+  }
+
+  public List<Map<String, String>> getAllFinancialTransactions() throws Exception {
+    return EmployeeDAO.getFinancialTransactions();
+  }
+
   private boolean doesCpfExist(String cpf) throws Exception {
     var count = DatabaseWrapper.executeQueryForSingleInt(SQLQueries.CHECK_CPF_EXISTS, cpf);
     return count > 0;
@@ -37,7 +74,8 @@ public class EmployeeController {
       throw new IllegalArgumentException("As informações do funcionário estão incompletas.");
     }
 
-    Address address = employee.getAddress();
+    var address = employee.getAddress();
+
     if (address == null || address.getZipCode() == null || address.getCity() == null) {
       throw new IllegalArgumentException("As informações do endereço estão incompletas.");
     }
@@ -48,26 +86,9 @@ public class EmployeeController {
     }
   }
 
-  public String getEmployeeNameByCode(String code) throws Exception {
-    final String query =
-        "SELECT name FROM user u "
-            + "INNER JOIN employee e ON u.id_user = e.id_user "
-            + "WHERE e.employee_code = ?";
-    return DatabaseWrapper.executeQueryForSingleString(query, code);
-  }
-
-  public boolean validateEmployeeLogin(String code, String password) throws Exception {
-    final String query =
-        "SELECT COUNT(*) FROM user u "
-            + "INNER JOIN employee e ON u.id_user = e.id_user "
-            + "WHERE e.employee_code = ? AND u.password = ?";
-    int count = DatabaseWrapper.executeQueryForSingleInt(query, code, password);
-    return count > 0;
-  }
-
   private int insertUser(Employee employee) throws Exception {
     var userId =
-        DatabaseWrapper.executeUpdate(
+        DatabaseWrapper.executeQuery(
             SQLQueries.INSERT_USER,
             employee.getName(),
             employee.getCpf(),
@@ -85,7 +106,7 @@ public class EmployeeController {
   }
 
   private void insertAddress(int userId, Address address) throws Exception {
-    DatabaseWrapper.executeUpdate(
+    DatabaseWrapper.executeQuery(
         SQLQueries.INSERT_ADDRESS,
         userId,
         address.getZipCode(),
@@ -96,22 +117,8 @@ public class EmployeeController {
         address.getState());
   }
 
-  public boolean authenticate(String password) throws Exception {
-    final String query = "SELECT COUNT(*) FROM user WHERE password = ? AND user_type = 'EMPLOYEE'";
-    int count = DatabaseWrapper.executeQueryForSingleInt(query, password);
-    return count > 0;
-  }
-
-  public Map<String, String> getEmployeeDetails(String employeeCode) throws Exception {
-    return EmployeeDAO.getEmployeeDetailsByCode(employeeCode);
-  }
-
-  public List<Map<String, String>> getAllFinancialTransactions() throws Exception {
-    return EmployeeDAO.getFinancialTransactions();
-  }
-
   private void insertEmployee(int userId, Employee employee) throws Exception {
-    DatabaseWrapper.executeUpdate(
+    DatabaseWrapper.executeQuery(
         SQLQueries.INSERT_EMPLOYEE, employee.getEmployeeCode(), employee.getRole(), userId);
   }
 }

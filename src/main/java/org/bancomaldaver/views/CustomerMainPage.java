@@ -34,10 +34,9 @@ public final class CustomerMainPage extends QWidget {
     mainLayout.addWidget(withdrawalButton);
     mainLayout.addWidget(statementButton);
 
-    // Check if the account is a checking account
     try {
       var controller = new CustomerController();
-      String accountType = controller.getAccountType(accountId);
+      var accountType = controller.getAccountType(accountId);
 
       if ("CHECKING".equals(accountType)) {
         var creditLimitButton =
@@ -201,7 +200,7 @@ public final class CustomerMainPage extends QWidget {
         () -> {
           try {
             var controller = new CustomerController();
-            double creditLimit = controller.getCreditLimit(accountId, passwordField.text());
+            var creditLimit = controller.getCreditLimit(accountId, passwordField.text());
             QMessageBox.information(
                 this, "Limite", "Seu limite é: R$ " + String.format("%.2f", creditLimit));
             dialog.accept();

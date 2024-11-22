@@ -80,7 +80,7 @@ CREATE TABLE transaction
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_account       INT                                        NOT NULL,
     FOREIGN KEY (id_account) REFERENCES account (id_account) ON DELETE CASCADE
-);
+) ENGINE = InnoDB;
 
 CREATE TABLE report
 (
@@ -134,4 +134,5 @@ VALUES ('DEPOSIT', 200.00, '2024-11-01', 1),
        ('DEPOSIT', 500.00, '2024-11-03', 3),
        ('TRANSFER', 200.00, '2024-11-08', 3),
        ('WITHDRAWAL', 400.00, '2024-11-09', 4);
+
 

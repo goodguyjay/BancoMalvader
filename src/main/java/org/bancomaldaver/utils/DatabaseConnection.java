@@ -35,15 +35,4 @@ final class DatabaseConnection {
       throw new RuntimeException("Erro ao conectar ao banco de dados.");
     }
   }
-
-  static void closeConnection(Connection connection) {
-    if (connection != null) {
-      try {
-        connection.close();
-      } catch (Exception e) {
-        logger.log(java.util.logging.Level.SEVERE, e.getMessage());
-        throw new RuntimeException("Erro ao fechar a conexão do banco de dados.");
-      }
-    }
-  }
 }

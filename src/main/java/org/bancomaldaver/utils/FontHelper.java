@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class FontHelper {
+public final class FontHelper {
   private static final Logger logger = Logger.getLogger(FontHelper.class.getName());
   private static QFont baseFont;
 

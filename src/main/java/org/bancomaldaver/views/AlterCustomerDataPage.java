@@ -4,14 +4,13 @@ import io.qt.core.Qt;
 import io.qt.widgets.*;
 import org.bancomaldaver.utils.FontHelper;
 
-public class AlterCustomerDataPage extends QWidget {
+public final class AlterCustomerDataPage extends QWidget {
   public AlterCustomerDataPage(QMainWindow mainWindow) {
     setWindowTitle("Alterar Dados do Cliente");
 
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back button
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -29,7 +28,6 @@ public class AlterCustomerDataPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
-    // Placeholder Label
     var placeholderLabel =
         new QLabel("Funcionalidade para alterar telefone e endereço de clientes.");
     placeholderLabel.setFont(FontHelper.getBaseFont(18));

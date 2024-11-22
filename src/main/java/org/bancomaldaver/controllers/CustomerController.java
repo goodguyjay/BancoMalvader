@@ -8,6 +8,7 @@ import org.bancomaldaver.dao.CustomerDAO;
 import org.bancomaldaver.utils.DatabaseWrapper;
 
 public final class CustomerController {
+
   public double getBalance(int accountId, String password) throws Exception {
     if (!authenticate(accountId, password)) {
       throw new IllegalArgumentException("Senha incorreta.");
@@ -28,7 +29,8 @@ public final class CustomerController {
       throw new IllegalArgumentException("Senha incorreta.");
     }
 
-    double balance = CustomerDAO.getBalance(accountId);
+    var balance = CustomerDAO.getBalance(accountId);
+
     if (amount > balance) {
       throw new IllegalArgumentException("Saldo insuficiente.");
     }

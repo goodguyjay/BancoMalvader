@@ -13,7 +13,7 @@ import org.bancomaldaver.models.AccountClosureData;
 import org.bancomaldaver.utils.ButtonUtils;
 import org.bancomaldaver.utils.NavigationManager;
 
-public class EmployeeMainPage extends QWidget {
+public final class EmployeeMainPage extends QWidget {
 
   public EmployeeMainPage(QMainWindow mainWindow) {
     setWindowTitle("Banco Malvader - Página Principal do Funcionário");
@@ -21,25 +21,21 @@ public class EmployeeMainPage extends QWidget {
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back Button
     var backButton =
         ButtonUtils.createBackButton(
             "Sair", () -> NavigationManager.getInstance().goBack(new MainMenuPage()), this);
     mainLayout.addWidget(backButton, 0, Qt.AlignmentFlag.AlignTop);
 
-    // Menu Title
     var titleLabel = new QLabel("Menu Principal do Funcionário");
     titleLabel.setStyleSheet(
         "font-size: 24px; font-weight: bold; color: #333; text-align: center; margin-bottom: 20px;");
     titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter);
     mainLayout.addWidget(titleLabel);
 
-    // Data Consultation Menu
     var consultDataButton =
         ButtonUtils.createButton(
             "Consulta de Dados", () -> openDataConsultationDialog(mainWindow), this);
 
-    // Other Actions
     var createAccountButton =
         ButtonUtils.createButton("Criar Contas", () -> openCreateAccountDialog(mainWindow), this);
     var alterDataButton =
@@ -52,14 +48,13 @@ public class EmployeeMainPage extends QWidget {
             "Gerar Relatório de Movimentações", this::generateFinancialReportDialog, this);
     mainLayout.addWidget(generateReportButton);
 
-    // Add buttons to the bottom layout
     var bottomLayout = new QVBoxLayout();
     bottomLayout.addWidget(consultDataButton);
     bottomLayout.addWidget(createAccountButton);
     bottomLayout.addWidget(alterDataButton);
     bottomLayout.addWidget(closeAccountButton);
 
-    bottomLayout.setSpacing(15); // Adjust spacing between buttons
+    bottomLayout.setSpacing(15);
     mainLayout.addLayout(bottomLayout);
 
     centralWidget.setStyleSheet("background-color: #f5f5f5; padding: 20px;");
@@ -119,14 +114,13 @@ public class EmployeeMainPage extends QWidget {
       var employeeController = new EmployeeController();
       var transactions = employeeController.getAllFinancialTransactions();
 
-      // aqui ou macacão, eu tô usando variável do powershell, não muda isso aqui
       var userHome = System.getenv("USERPROFILE");
 
       if (userHome == null || userHome.isEmpty()) {
         throw new Exception("Não foi possível determinar o diretório do usuário.");
       }
 
-      // aqui eu tô unindo a variável do powershell com a pasta que eu quero, altera se você quiser
+      // aqui eu tô unindo a variável do powershell com a pasta que eu quero
       var downloadsFolder = userHome + "\\Downloads";
 
       // nome do relatório
@@ -201,11 +195,11 @@ public class EmployeeMainPage extends QWidget {
     fetchButton.clicked.connect(
         () -> {
           try {
-            String accountNumber = accountNumberField.text().trim();
+            var accountNumber = accountNumberField.text().trim();
             var accountController = new AccountController();
             var details = accountController.getAccountDetails(accountNumber);
 
-            StringBuilder message = new StringBuilder();
+            var message = new StringBuilder();
             message.append("Tipo: ").append(details.get("account_type")).append("\n");
             message.append("Nome: ").append(details.get("name")).append("\n");
             message.append("CPF: ").append(details.get("cpf")).append("\n");
@@ -249,11 +243,11 @@ public class EmployeeMainPage extends QWidget {
     fetchButton.clicked.connect(
         () -> {
           try {
-            String employeeCode = employeeCodeField.text().trim();
+            var employeeCode = employeeCodeField.text().trim();
             var employeeController = new EmployeeController();
             var details = employeeController.getEmployeeDetails(employeeCode);
 
-            StringBuilder message = new StringBuilder();
+            var message = new StringBuilder();
             message.append("Código: ").append(details.get("employee_code")).append("\n");
             message.append("Cargo: ").append(details.get("role")).append("\n");
             message.append("Nome: ").append(details.get("name")).append("\n");
@@ -452,7 +446,7 @@ public class EmployeeMainPage extends QWidget {
 
     fetchButton.clicked.connect(
         () -> {
-          String cpf = cpfField.text().trim();
+          var cpf = cpfField.text().trim();
           if (!cpf.isEmpty()) {
             try {
               AccountController accountController = new AccountController();
@@ -474,7 +468,7 @@ public class EmployeeMainPage extends QWidget {
 
     closeButton.clicked.connect(
         () -> {
-          String cpf = cpfField.text().trim();
+          var cpf = cpfField.text().trim();
           if (!cpf.isEmpty()) {
             try {
               var accountController = new AccountController();

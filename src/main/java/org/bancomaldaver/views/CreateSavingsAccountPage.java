@@ -11,7 +11,7 @@ import org.bancomaldaver.models.Customer;
 import org.bancomaldaver.models.SavingsAccount;
 import org.bancomaldaver.utils.FontHelper;
 
-public class CreateSavingsAccountPage extends QWidget {
+public final class CreateSavingsAccountPage extends QWidget {
   private final QLineEdit usernameField;
   private final QLineEdit cpfField;
   private final QDateEdit birthDateField;
@@ -31,7 +31,6 @@ public class CreateSavingsAccountPage extends QWidget {
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back button
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -49,10 +48,8 @@ public class CreateSavingsAccountPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
-    // Form layout
     var formLayout = new QFormLayout();
 
-    // Agency Dropdown
     agencyDropdown = new QComboBox();
     agencyDropdown.addItem("1 - Agência DF", "DF");
     agencyDropdown.addItem("2 - Agência GO", "GO");
@@ -61,20 +58,17 @@ public class CreateSavingsAccountPage extends QWidget {
     agencyDropdown.setFont(FontHelper.getBaseFont(16));
     formLayout.addRow("Agência:", agencyDropdown);
 
-    // Full Name
     usernameField = new QLineEdit();
     usernameField.setFont(FontHelper.getBaseFont(16));
     usernameField.setPlaceholderText("Digite seu nome completo");
     formLayout.addRow("Nome Completo:", usernameField);
 
-    // CPF with Mask
     cpfField = new QLineEdit();
     cpfField.setFont(FontHelper.getBaseFont(16));
     cpfField.setPlaceholderText("Digite seu CPF");
     cpfField.setInputMask("000.000.000-00;_");
     formLayout.addRow("CPF:", cpfField);
 
-    // Birth Date
     birthDateField = new QDateEdit();
     birthDateField.setFont(FontHelper.getBaseFont(16));
     birthDateField.setCalendarPopup(true);
@@ -85,55 +79,47 @@ public class CreateSavingsAccountPage extends QWidget {
     phoneField.setPlaceholderText("Digite seu telefone");
     formLayout.addRow("Telefone:", phoneField);
 
-    // CEP with Mask
     cepField = new QLineEdit();
     cepField.setFont(FontHelper.getBaseFont(16));
     cepField.setPlaceholderText("xxxxx-xxx");
     cepField.setInputMask("00000-000;_");
     formLayout.addRow("CEP:", cepField);
 
-    // Street with Character Limit Note
     streetField = new QLineEdit();
     streetField.setFont(FontHelper.getBaseFont(16));
     streetField.setPlaceholderText("Logradouro (máximo 50 caracteres)");
     formLayout.addRow("Logradouro:", streetField);
 
-    // House Number
     houseNumberField = new QLineEdit();
     houseNumberField.setFont(FontHelper.getBaseFont(16));
     houseNumberField.setPlaceholderText("Digite o número");
     houseNumberField.setValidator(new QIntValidator(0, 99999));
     formLayout.addRow("Número:", houseNumberField);
 
-    // Neighborhood
     neighborhoodField = new QLineEdit();
     neighborhoodField.setFont(FontHelper.getBaseFont(16));
     neighborhoodField.setPlaceholderText("Digite o bairro");
     formLayout.addRow("Bairro:", neighborhoodField);
 
-    // City
     cityField = new QLineEdit();
     cityField.setFont(FontHelper.getBaseFont(16));
     cityField.setPlaceholderText("Digite a cidade");
     formLayout.addRow("Cidade:", cityField);
 
-    // State
     stateDropdown = new QComboBox();
-    for (BrazilianStates state : BrazilianStates.values()) {
+    for (var state : BrazilianStates.values()) {
       stateDropdown.addItem(
           state.getAbbreviation() + " - " + state.getFullName(), state.getAbbreviation());
     }
     stateDropdown.setFont(FontHelper.getBaseFont(16));
     formLayout.addRow("Estado:", stateDropdown);
 
-    // Password
     passwordField = new QLineEdit();
     passwordField.setFont(FontHelper.getBaseFont(16));
     passwordField.setPlaceholderText("Digite sua senha");
     passwordField.setEchoMode(QLineEdit.EchoMode.Password);
     formLayout.addRow("Senha:", passwordField);
 
-    // Register Button
     var registerButton = new QPushButton("Cadastrar");
     registerButton.setFont(FontHelper.getBaseFont(16));
     registerButton.setStyleSheet(
@@ -153,7 +139,6 @@ public class CreateSavingsAccountPage extends QWidget {
     registerButton.clicked.connect(this::onRegisterClicked);
     formLayout.addRow(registerButton);
 
-    // Assemble layouts
     mainLayout.addLayout(formLayout);
     centralWidget.setLayout(mainLayout);
     setLayout(mainLayout);
@@ -161,7 +146,6 @@ public class CreateSavingsAccountPage extends QWidget {
 
   private void onRegisterClicked() {
     try {
-      // Collect customer data
       var customer = new Customer();
       customer.setName(usernameField.text());
       customer.setCpf(cpfField.text().replaceAll("\\D", ""));
@@ -180,12 +164,10 @@ public class CreateSavingsAccountPage extends QWidget {
       address.setState(selectedState);
       customer.setAddress(address);
 
-      // Collect account data
       var savingsAccount = new SavingsAccount();
       savingsAccount.setBranch(agencyDropdown.currentData().toString());
-      savingsAccount.setInterestRate(0.5); // Default interest rate
+      savingsAccount.setInterestRate(0.5);
 
-      // Call controller
       var userController = new UserController();
       var userId = userController.createUserWithAddress(customer);
 

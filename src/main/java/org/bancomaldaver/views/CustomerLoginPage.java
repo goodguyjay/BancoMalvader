@@ -6,7 +6,7 @@ import org.bancomaldaver.controllers.UserController;
 import org.bancomaldaver.utils.FontHelper;
 import org.bancomaldaver.utils.NavigationManager;
 
-public class CustomerLoginPage extends QWidget {
+public final class CustomerLoginPage extends QWidget {
   private final QLineEdit cpfField;
   private final QLineEdit passwordField;
   private final QComboBox branchDropdown;

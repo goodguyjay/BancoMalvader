@@ -14,8 +14,8 @@ public final class AccountController {
   }
 
   public AccountClosureData getAccountClosureData(String cpf) throws Exception {
-    int userId = accountDAO.getUserIdByCpf(cpf);
-    int customerId = accountDAO.getCustomerIdByUserId(userId);
+    var userId = accountDAO.getUserIdByCpf(cpf);
+    var customerId = accountDAO.getCustomerIdByUserId(userId);
     var accountNumber = accountDAO.getAccountNumberByCustomerId(customerId);
 
     return new AccountClosureData(cpf, userId, customerId, accountNumber);

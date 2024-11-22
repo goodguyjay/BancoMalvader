@@ -6,7 +6,7 @@ import org.bancomaldaver.controllers.EmployeeController;
 import org.bancomaldaver.utils.FontHelper;
 import org.bancomaldaver.utils.NavigationManager;
 
-public class EmployeeLoginPage extends QWidget {
+public final class EmployeeLoginPage extends QWidget {
   private final QLineEdit employeeCodeField;
   private final QLineEdit employeeNameField;
   private final QLineEdit passwordField;
@@ -14,23 +14,19 @@ public class EmployeeLoginPage extends QWidget {
   public EmployeeLoginPage(QMainWindow mainWindow) {
     setWindowTitle("Banco Malvader - Login Funcionário");
 
-    // Central widget and main layout
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Top layout with back button
     var topLayout = new QHBoxLayout();
     topLayout.setAlignment(Qt.AlignmentFlag.AlignLeft);
     var backButton = createBackButton(mainWindow);
     topLayout.addWidget(backButton);
 
-    // Center layout with title and form fields
     var centerLayout = new QVBoxLayout();
     centerLayout.setAlignment(Qt.AlignmentFlag.AlignCenter);
     var titleLabel = createTitleLabel("Login Funcionário");
     centerLayout.addWidget(titleLabel);
 
-    // Form layout for fields and buttons
     var formLayout = new QVBoxLayout();
     formLayout.setAlignment(Qt.AlignmentFlag.AlignCenter);
 
@@ -41,7 +37,7 @@ public class EmployeeLoginPage extends QWidget {
     employeeNameField.setReadOnly(true);
     formLayout.addWidget(createFormRow("Nome do Funcionário:", employeeNameField));
 
-    passwordField = createPasswordField("Senha");
+    passwordField = createPasswordField();
     formLayout.addWidget(createFormRow("Senha:", passwordField));
 
     var loginButton = createLoginButton(mainWindow);
@@ -50,20 +46,15 @@ public class EmployeeLoginPage extends QWidget {
     var createEmployeeButton = createCreateEmployeeButton();
     formLayout.addWidget(createEmployeeButton);
 
-    // Set fixed sizes for text fields only
     setFixedFieldSizes(employeeCodeField, employeeNameField, passwordField);
 
-    // Add layouts to the main layout
     mainLayout.addLayout(topLayout);
-    //    mainLayout.addStretch(); // Push content to the center
     mainLayout.addLayout(centerLayout);
     mainLayout.addLayout(formLayout);
-    //    mainLayout.addStretch(); // Push content to the center
 
     centralWidget.setStyleSheet("background-color: #f5f5f5;" + "padding: 20px;");
     setLayout(mainLayout);
 
-    // Event handlers
     setupEventHandlers(mainWindow, loginButton, createEmployeeButton);
   }
 
@@ -101,8 +92,8 @@ public class EmployeeLoginPage extends QWidget {
     return lineEdit;
   }
 
-  private QLineEdit createPasswordField(String placeholder) {
-    var passwordField = createLineEdit(placeholder);
+  private QLineEdit createPasswordField() {
+    var passwordField = createLineEdit("Senha");
     passwordField.setEchoMode(QLineEdit.EchoMode.Password);
     return passwordField;
   }
@@ -161,7 +152,7 @@ public class EmployeeLoginPage extends QWidget {
   }
 
   private void setFixedFieldSizes(QLineEdit... fields) {
-    int fixedWidth = 683; // 50% of 1366px
+    int fixedWidth = 683;
     for (QLineEdit field : fields) {
       field.setFixedWidth(fixedWidth);
     }
@@ -175,11 +166,11 @@ public class EmployeeLoginPage extends QWidget {
   }
 
   private void onEmployeeCodeChanged() {
-    String code = employeeCodeField.text().trim();
+    var code = employeeCodeField.text().trim();
     if (!code.isEmpty()) {
       try {
         var controller = new EmployeeController();
-        String name = controller.getEmployeeNameByCode(code);
+        var name = controller.getEmployeeNameByCode(code);
         employeeNameField.setText(name != null ? name : "Funcionário não encontrado");
       } catch (Exception e) {
         employeeNameField.setText("Erro ao buscar nome");
@@ -190,11 +181,11 @@ public class EmployeeLoginPage extends QWidget {
   }
 
   private void onLoginClicked(QMainWindow mainWindow) {
-    String code = employeeCodeField.text().trim();
-    String password = passwordField.text();
+    var code = employeeCodeField.text().trim();
+    var password = passwordField.text();
     try {
       var controller = new EmployeeController();
-      boolean isValid = controller.validateEmployeeLogin(code, password);
+      var isValid = controller.validateEmployeeLogin(code, password);
 
       if (isValid) {
         QMessageBox.information(this, "Login", "Login realizado com sucesso!");

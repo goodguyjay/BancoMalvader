@@ -4,14 +4,13 @@ import io.qt.core.Qt;
 import io.qt.widgets.*;
 import org.bancomaldaver.utils.FontHelper;
 
-public class AlterCheckingAccountPage extends QWidget {
+public final class AlterCheckingAccountPage extends QWidget {
   public AlterCheckingAccountPage(QMainWindow mainWindow) {
     setWindowTitle("Alterar Conta Corrente");
 
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back button
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -29,7 +28,6 @@ public class AlterCheckingAccountPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
-    // Placeholder Label
     var placeholderLabel =
         new QLabel("Funcionalidade para alterar limite e data de vencimento de contas correntes.");
     placeholderLabel.setFont(FontHelper.getBaseFont(18));

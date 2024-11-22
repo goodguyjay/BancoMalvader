@@ -4,14 +4,13 @@ import io.qt.core.Qt;
 import io.qt.widgets.*;
 import org.bancomaldaver.utils.FontHelper;
 
-public class AlterEmployeeDataPage extends QWidget {
+public final class AlterEmployeeDataPage extends QWidget {
   public AlterEmployeeDataPage(QMainWindow mainWindow) {
     setWindowTitle("Alterar Dados do Funcionário");
 
     var centralWidget = new QWidget();
     var mainLayout = new QVBoxLayout(centralWidget);
 
-    // Back button
     var topLayout = new QHBoxLayout();
     var backButton = new QPushButton("Voltar");
     backButton.setFont(FontHelper.getBaseFont(16));
@@ -29,7 +28,6 @@ public class AlterEmployeeDataPage extends QWidget {
     topLayout.addWidget(backButton);
     mainLayout.addLayout(topLayout);
 
-    // Placeholder Label
     var placeholderLabel =
         new QLabel(
             "Funcionalidade para alterar código, cargo, telefone e endereço de funcionários.");

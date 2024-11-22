@@ -16,7 +16,7 @@ public final class UserController {
       throw new IllegalArgumentException("CPF já cadastrado.");
     }
 
-    DatabaseWrapper.executeUpdate(
+    DatabaseWrapper.executeQuery(
         SQLQueries.INSERT_USER,
         customer.getName(),
         customer.getCpf(),
@@ -36,7 +36,7 @@ public final class UserController {
     logger.log(Level.INFO, "Usuário inserido com sucesso: ID " + userId);
 
     var address = customer.getAddress();
-    DatabaseWrapper.executeUpdate(
+    DatabaseWrapper.executeQuery(
         SQLQueries.INSERT_ADDRESS,
         userId,
         address.getZipCode(),
@@ -46,14 +46,7 @@ public final class UserController {
         address.getCity(),
         address.getState());
 
-    //    DatabaseWrapper.executeUpdate(SQLQueries.INSERT_CUSTOMER, userId);
-
     return userId;
-  }
-
-  private boolean doesCpfExist(String cpf) throws Exception {
-    var count = DatabaseWrapper.executeQueryForSingleInt(SQLQueries.CHECK_CPF_EXISTS, cpf);
-    return count > 0;
   }
 
   public Map<String, String> getCustomerDetails(String cpf) throws Exception {
@@ -61,6 +54,8 @@ public final class UserController {
   }
 
   public int validateCustomerLogin(String cpf, String password, String branch) throws Exception {
+    // Não era pra ter uma query aqui... mas por questões de tempo, não tenho tempo de refatorar e
+    // testar tudo de novo.
     final String query =
         "SELECT a.id_account FROM user u "
             + "INNER JOIN customer c ON u.id_user = c.id_user "
@@ -68,5 +63,10 @@ public final class UserController {
             + "WHERE u.cpf = ? AND u.password = ? AND a.branch = ?";
 
     return DatabaseWrapper.executeQueryForSingleInt(query, cpf, password, branch);
+  }
+
+  private boolean doesCpfExist(String cpf) throws Exception {
+    var count = DatabaseWrapper.executeQueryForSingleInt(SQLQueries.CHECK_CPF_EXISTS, cpf);
+    return count > 0;
   }
 }

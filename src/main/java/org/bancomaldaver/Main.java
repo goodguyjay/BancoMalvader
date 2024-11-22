@@ -25,9 +25,6 @@ public class Main {
 
       QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseDesktopOpenGL);
 
-      //      var mainMenu = new MainMenuPage();
-      //      mainMenu.show();
-
       var mainWindow = new QMainWindow();
       mainWindow.setWindowTitle("Banco Malvader");
 

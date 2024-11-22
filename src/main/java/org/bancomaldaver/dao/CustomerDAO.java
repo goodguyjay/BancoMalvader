@@ -1,7 +1,5 @@
 package org.bancomaldaver.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +21,14 @@ public final class CustomerDAO {
       throw new Exception("Cliente não encontrado.");
     }
 
-    // Convert Map<String, Object> to Map<String, String>
     Map<String, String> formattedData = new HashMap<>();
+
     for (Map.Entry<String, Object> entry : rawData.entrySet()) {
       formattedData.put(
           entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : "");
     }
 
-    // Format the address
-    String address =
+    var address =
         String.format(
             "%s, %s, %s, %s, %s, %s",
             rawData.get("street"),
@@ -47,11 +44,13 @@ public final class CustomerDAO {
 
   public static double getBalance(int accountId) throws Exception {
     final String query = "SELECT balance FROM account WHERE id_account = ?";
+
     return DatabaseWrapper.executeQueryForSingleDouble(query, accountId);
   }
 
   public static double getCreditLimit(int accountId) throws Exception {
     final String query = "SELECT credit_limit FROM checking_account WHERE id_account = ?";
+
     return DatabaseWrapper.executeQueryForSingleDouble(query, accountId);
   }
 
@@ -61,37 +60,31 @@ public final class CustomerDAO {
             + "INNER JOIN customer c ON u.id_user = c.id_user "
             + "INNER JOIN account a ON c.id_customer = a.id_customer "
             + "WHERE a.id_account = ? AND u.password = ?";
-    int count = DatabaseWrapper.executeQueryForSingleInt(query, accountId, password);
+
+    var count = DatabaseWrapper.executeQueryForSingleInt(query, accountId, password);
+
     return count > 0;
   }
 
   public static void updateBalance(int accountId, double amount) throws Exception {
     final String query = "UPDATE account SET balance = balance + ? WHERE id_account = ?";
-    DatabaseWrapper.executeUpdate(query, amount, accountId);
+
+    DatabaseWrapper.executeUpdateTerribleFix(query, accountId, amount, accountId);
   }
 
   public static void insertTransaction(int accountId, String transactionType, double amount)
       throws Exception {
     final String query =
         "INSERT INTO transaction (transaction_type, amount, id_account) VALUES (?, ?, ?)";
-    DatabaseWrapper.executeUpdate(query, transactionType, amount, accountId);
+
+    DatabaseWrapper.executeUpdateTerribleFix(query, accountId, transactionType, amount, accountId);
   }
 
   public static List<Map<String, String>> getTransactions(int accountId) throws Exception {
     final String query =
         "SELECT transaction_type, amount, transaction_date "
             + "FROM transaction WHERE id_account = ? ORDER BY transaction_date ASC";
-    return DatabaseWrapper.executeQueryForMultipleResults(query, accountId);
-  }
 
-  private static String formatAddress(ResultSet resultSet) throws SQLException {
-    return String.format(
-        "%s, %s, %s, %s, %s, %s",
-        resultSet.getString("street"),
-        resultSet.getString("house_number"),
-        resultSet.getString("neighborhood"),
-        resultSet.getString("city"),
-        resultSet.getString("state"),
-        resultSet.getString("zip_code"));
+    return DatabaseWrapper.executeQueryForMultipleResults(query, accountId);
   }
 }

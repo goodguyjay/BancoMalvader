@@ -15,7 +15,7 @@ public final class DatabaseWrapper {
     throw new UnsupportedOperationException("Essa classe não pode ser instanciada diretamente.");
   }
 
-  public static int executeUpdate(String query, Object... parameters) {
+  public static int executeQuery(String query, Object... parameters) {
     if (!isQuerySafe(query)) {
       throw new IllegalArgumentException("Tentativa de Injeção SQL detectada.");
     }
@@ -25,7 +25,7 @@ public final class DatabaseWrapper {
             connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
       setParameters(statement, parameters);
-      int affectedRows = statement.executeUpdate();
+      var affectedRows = statement.executeUpdate();
 
       if (affectedRows == 0) {
         logger.warning("Nenhuma linha foi afetada pela operação.");
@@ -33,11 +33,33 @@ public final class DatabaseWrapper {
 
       try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
         if (generatedKeys.next()) {
-          return generatedKeys.getInt(1); // Return the first generated key
+          return generatedKeys.getInt(1);
         } else {
           throw new SQLException("Nenhuma chave gerada foi retornada.");
         }
       }
+    } catch (SQLException e) {
+      logger.log(Level.SEVERE, "Erro ao executar o update: " + e.getMessage());
+      throw new RuntimeException("Operação no banco de dados cancelada.");
+    }
+  }
+
+  public static int executeUpdateTerribleFix(String query, int accountId, Object... parameters) {
+    if (!isQuerySafe(query)) {
+      throw new IllegalArgumentException("Tentativa de Injeção SQL detectada.");
+    }
+
+    try (Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+
+      setParameters(statement, parameters);
+      var affectedRows = statement.executeUpdate();
+
+      if (affectedRows == 0) {
+        logger.warning("Nenhuma linha foi afetada pela operação.");
+      }
+
+      return accountId;
     } catch (SQLException e) {
       logger.log(Level.SEVERE, "Erro ao executar o update: " + e.getMessage());
       throw new RuntimeException("Operação no banco de dados cancelada.");
@@ -58,11 +80,11 @@ public final class DatabaseWrapper {
       try (ResultSet resultSet = statement.executeQuery()) {
         List<Map<String, String>> results = new ArrayList<>();
         ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
+        var columnCount = metaData.getColumnCount();
 
         while (resultSet.next()) {
           Map<String, String> row = new HashMap<>();
-          for (int i = 1; i <= columnCount; i++) {
+          for (var i = 1; i <= columnCount; i++) {
             String columnName = metaData.getColumnLabel(i);
             Object value = resultSet.getObject(i);
             row.put(columnName, value != null ? value.toString() : "");
@@ -103,23 +125,6 @@ public final class DatabaseWrapper {
     }
   }
 
-  public static ResultSet executeQuery(String query, Object... parameters) {
-    if (!isQuerySafe(query)) {
-      throw new IllegalArgumentException("Tentativa de Injeção SQL detectada.");
-    }
-
-    try (Connection connection = DatabaseConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement(query)) {
-
-      setParameters(statement, parameters);
-      return statement.executeQuery();
-
-    } catch (SQLException e) {
-      logger.log(java.util.logging.Level.SEVERE, "Erro ao executar query: " + e.getMessage());
-      throw new RuntimeException("Operação no banco de dados cancelada.");
-    }
-  }
-
   public static double executeQueryForSingleDouble(String query, Object... parameters)
       throws Exception {
     if (!isQuerySafe(query)) {
@@ -133,7 +138,7 @@ public final class DatabaseWrapper {
 
       try (ResultSet resultSet = statement.executeQuery()) {
         if (resultSet.next()) {
-          return resultSet.getDouble(1); // Return the first column of the first row
+          return resultSet.getDouble(1);
         } else {
           throw new SQLException("Nenhum resultado encontrado para a consulta.");
         }
@@ -156,10 +161,10 @@ public final class DatabaseWrapper {
         }
       }
     } catch (Exception e) {
-      throw new Exception("Error executing query: " + e.getMessage(), e);
+      throw new Exception("Erro ao executar query: " + e.getMessage(), e);
     }
 
-    return 0; // Default value if no rows found
+    return 0;
   }
 
   public static String executeQueryForSingleString(String query, Object... parameters)
@@ -171,14 +176,14 @@ public final class DatabaseWrapper {
 
       try (ResultSet resultSet = statement.executeQuery()) {
         if (resultSet.next()) {
-          return resultSet.getString(1); // Return the first column of the first row
+          return resultSet.getString(1);
         }
       }
     } catch (Exception e) {
-      throw new Exception("Error executing query: " + e.getMessage(), e);
+      throw new Exception("Erro ao executar query: " + e.getMessage(), e);
     }
 
-    return null; // Default value if no rows found
+    return null;
   }
 
   public static Map<String, Object> executeQueryForSingleResult(
@@ -196,11 +201,11 @@ public final class DatabaseWrapper {
         if (resultSet.next()) {
           Map<String, Object> result = new HashMap<>();
           ResultSetMetaData metaData = resultSet.getMetaData();
-          int columnCount = metaData.getColumnCount();
+          var columnCount = metaData.getColumnCount();
 
-          for (int i = 1; i <= columnCount; i++) {
-            String columnName = metaData.getColumnLabel(i);
-            Object value = resultSet.getObject(i);
+          for (var i = 1; i <= columnCount; i++) {
+            var columnName = metaData.getColumnLabel(i);
+            var value = resultSet.getObject(i);
             result.put(columnName, value);
           }
 
@@ -213,19 +218,6 @@ public final class DatabaseWrapper {
     } catch (SQLException e) {
       logger.log(java.util.logging.Level.SEVERE, "Erro ao executar query: " + e.getMessage());
       throw new RuntimeException("Operação no banco de dados cancelada.");
-    }
-  }
-
-  public static void closeResources(ResultSet resultSet, PreparedStatement statement) {
-    try {
-      if (resultSet != null) {
-        resultSet.close();
-      }
-      if (statement != null) {
-        statement.close();
-      }
-    } catch (SQLException e) {
-      logger.log(java.util.logging.Level.WARNING, "Erro ao finalizar a conexão: " + e.getMessage());
     }
   }
 

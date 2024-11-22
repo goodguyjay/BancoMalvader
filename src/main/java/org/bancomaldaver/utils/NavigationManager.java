@@ -1,6 +1,5 @@
 package org.bancomaldaver.utils;
 
-import io.qt.widgets.QDialog;
 import io.qt.widgets.QMainWindow;
 import io.qt.widgets.QWidget;
 import java.util.Stack;
@@ -43,17 +42,5 @@ public final class NavigationManager {
     }
 
     throw new IllegalArgumentException("Página inválida ou a stack de navegação está vazia.");
-  }
-
-  public void openDialog(QDialog dialog) {
-    dialog.exec();
-  }
-
-  public void clearStackAndNavigateTo(QWidget page) {
-    while (!navigationStack.isEmpty()) {
-      navigationStack.pop().close();
-    }
-    navigationStack.push(page);
-    mainWindow.setCentralWidget(page);
   }
 }
